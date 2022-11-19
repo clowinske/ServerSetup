@@ -1,9 +1,9 @@
+using ServerSetup.Models;
 namespace ServerSetup
 {
     public partial class Form1 : Form
     {
-        public string ServerFolderDir = @"C:\Users\dylon\OneDrive\Documents\Server";
-        public Models.ServerConfiguration ServerConfig = new Models.ServerConfiguration();
+        public ServerConfiguration ServerConfig = new ServerConfiguration();
 
         public Form1()
         {
@@ -14,17 +14,14 @@ namespace ServerSetup
         {
             using (var browserDialog = new FolderBrowserDialog())
             {
-                browserDialog.InitialDirectory = ServerFolderDir;
+                browserDialog.InitialDirectory = Defaults.InitialDirectory;
                 DialogResult result = browserDialog.ShowDialog();
 
-                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(browserDialog.SelectedPath))
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(browserDialog.SelectedPath))
                 {
-                ServerConfig.Files = Directory.GetFiles(browserDialog.SelectedPath).ToList();
-
-                    //System.Windows.Forms.MessageBox.Show("Files found: " + files.Length.ToString(), "Message");
+                    ServerConfig.Files = Directory.GetFiles(browserDialog.SelectedPath).ToList();
                 }
                 
-                //Console.Write(browserDialog.SelectedPath);
                 ServerFolderDirTB.Text = browserDialog.SelectedPath;
                 ServerConfig.FileDirectory = browserDialog.SelectedPath;
             }

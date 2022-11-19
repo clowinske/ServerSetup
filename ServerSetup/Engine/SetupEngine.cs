@@ -1,6 +1,9 @@
-﻿using ServerSetup.Models;
+﻿using Microsoft.VisualBasic.ApplicationServices;
+using ServerSetup.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +21,9 @@ namespace ServerSetup.Engine
             CreateEula();
             SetServerProperties();
             SetWhiteList();
+            SetOps();
+            RunBat();
+            Application.Exit();
         }
 
         public void GenerateBatFile()
@@ -57,7 +63,24 @@ namespace ServerSetup.Engine
 
         public void SetWhiteList()
         {
+            TextWriter txt = new StreamWriter(ServerConfig.FileDirectory + @"\whitelist.json");
+            txt.Write(Models.Defaults.Whitelist);
+            txt.Close();
+        }
 
+        public void SetOps() {
+            TextWriter txt = new StreamWriter(ServerConfig.FileDirectory + @"\ops.json");
+            txt.Write(Models.Defaults.Ops);
+            txt.Close();
+        }
+
+        public void RunBat()
+        {
+            Process p = new Process();
+            p.StartInfo.FileName = "cmd";
+            p.StartInfo.Arguments = "/c Start.bat";
+            p.StartInfo.WorkingDirectory= ServerConfig.FileDirectory;
+            p.Start();
         }
     }
 }
