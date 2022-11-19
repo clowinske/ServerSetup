@@ -3,7 +3,8 @@ namespace ServerSetup
     public partial class Form1 : Form
     {
         public string ServerFolderDir = @"C:\Users\dylon\OneDrive\Documents\Server";
-        public string[] Files { get; set; }
+        public Models.ServerConfiguration ServerConfig = new Models.ServerConfiguration();
+
         public Form1()
         {
             InitializeComponent();
@@ -16,30 +17,33 @@ namespace ServerSetup
                 browserDialog.InitialDirectory = ServerFolderDir;
                 DialogResult result = browserDialog.ShowDialog();
 
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(browserDialog.SelectedPath))
+                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(browserDialog.SelectedPath))
                 {
-                    Files = Directory.GetFiles(browserDialog.SelectedPath);
+                ServerConfig.Files = Directory.GetFiles(browserDialog.SelectedPath).ToList();
 
                     //System.Windows.Forms.MessageBox.Show("Files found: " + files.Length.ToString(), "Message");
                 }
-                foreach(var file in Files)
-                {
-                    Console.Write(file);
-
-                }
+                
                 //Console.Write(browserDialog.SelectedPath);
-                textBox2.Text = browserDialog.SelectedPath;
+                ServerFolderDirTB.Text = browserDialog.SelectedPath;
+                ServerConfig.FileDirectory = browserDialog.SelectedPath;
             }
         }
 
-        private void textBox2_TextChanged(object sender, EventArgs e)
+        private void SetupServerBtn_Click(object sender, EventArgs e)
         {
-
+            Engine.SetupEngine engine = new Engine.SetupEngine();
+            engine.ServerSetup(ServerConfig);
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void PortTB_TextChanged(object sender, EventArgs e)
         {
+            ServerConfig.Port = int.Parse(PortTB.Text.Trim());
+        }
 
+        private void ViewDistanceTB_TextChanged(object sender, EventArgs e)
+        {
+            ServerConfig.ViewDistance = int.Parse(ViewDistanceTB.Text.Trim());
         }
     }
 }
